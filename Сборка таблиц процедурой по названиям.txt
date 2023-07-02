@@ -9,8 +9,6 @@ AS $function$
 		FOR temprow IN SELECT shop_name AS sn, shop_table AS st FROM public.shops
 		LOOP
 		EXECUTE 'SELECT date, product_id, sales_cnt,''' || temprow.sn || ''' as shop_name from ' || temprow.st;
-		--SELECT date, product_id, sales_cnt, temprow.sn AS 'shop_name'
-		--FROM 
 		RETURN NEXT;
 		END LOOP;
     RETURN;
