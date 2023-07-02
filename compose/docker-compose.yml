@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+      --PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./init_data/:/docker-entrypoint-initdb.d/
