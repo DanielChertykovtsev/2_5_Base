@@ -16,5 +16,3 @@ AS $function$
 $function$
 
 SELECT * FROM select_time(2023,12) 
-
-compose>docker exec -it compose-db-1 psql -U postgres -W
