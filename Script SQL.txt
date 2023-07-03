@@ -1,0 +1,22 @@
+CREATE OR REPLACE FUNCTION public.select_time()
+	RETURNS table(product_id integer, sales_cnt bigint, sales_plan integer, monther NUMERIC, yearer NUMERIC, shop TEXT)  
+	LANGUAGE plpgsql
+AS $function$
+	DECLARE 
+		temprow record;
+		sql_string text;
+	BEGIN
+		FOR temprow IN SELECT shop_name AS sn, shop_table AS st FROM public.shops
+		LOOP
+			RETURN query EXECUTE '	SELECT t.product_id, t.sales_fact, pl.plan_cnt, t.monther, t.yearer,''' || temprow.sn || ''' as shop_name FROM (SELECT product_id, SUM(sales_cnt) AS sales_fact, EXTRACT (month FROM date) as monther, EXTRACT (YEAR FROM date) AS yearer FROM ' || temprow.st  ||' GROUP BY product_id, monther, yearer) AS t
+									INNER JOIN (SELECT shop_name, plan_cnt, product_id, EXTRACT (month FROM plan_date) as monther, EXTRACT (YEAR FROM plan_date) AS yearer FROM plan) AS pl
+									ON t.yearer = pl.yearer AND t.monther = pl.monther AND t.product_id = pl.product_id AND shop_name = pl.shop_name AND t.product_id = pl.product_id';
+		END LOOP;
+    RETURN;
+	END;
+$function$
+
+
+SELECT st.shop, pr.product_name, st.sales_cnt AS sales_fact, st.sales_plan AS sales_plan, round(st.sales_cnt::decimal/sales_plan::decimal*100) AS sales_fact_sales_plan_ratio, pr.price*st.sales_cnt AS income_fact, pr.price*st.sales_plan AS income_plan, round(pr.price*st.sales_cnt::decimal/pr.price*st.sales_plan::decimal*100) AS income_fact_income_plan_ratio  FROM select_time() AS st
+INNER JOIN products AS pr
+ON pr.product_id = st.product_id
