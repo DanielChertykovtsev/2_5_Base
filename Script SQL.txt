@@ -17,6 +17,6 @@ AS $function$
 $function$
 
 
-SELECT st.shop, pr.product_name, st.sales_cnt AS sales_fact, st.sales_plan AS sales_plan, round(st.sales_cnt::decimal/sales_plan::decimal*100) AS sales_fact_sales_plan_ratio, pr.price*st.sales_cnt AS income_fact, pr.price*st.sales_plan AS income_plan, round(pr.price*st.sales_cnt::decimal/pr.price*st.sales_plan::decimal*100) AS income_fact_income_plan_ratio  FROM select_time() AS st
+SELECT st.yearer AS Year, st.monther AS Month, st.shop, pr.product_name, st.sales_cnt AS sales_fact, st.sales_plan AS sales_plan, round(st.sales_cnt::decimal/sales_plan::decimal*100) AS sales_fact_sales_plan_ratio, pr.price*st.sales_cnt AS income_fact, pr.price*st.sales_plan AS income_plan, round(pr.price*st.sales_cnt::decimal/pr.price*st.sales_plan::decimal*100) AS income_fact_income_plan_ratio  FROM select_time() AS st
 INNER JOIN products AS pr
 ON pr.product_id = st.product_id
